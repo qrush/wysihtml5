@@ -55,7 +55,18 @@
     // Whether the composer should allow the user to manually resize images, tables etc.
     allowObjectResizing:  true,
     // Whether the rich text editor should be rendered on touch devices (wysihtml5 >= 0.3.0 comes with basic support for iOS 5)
-    supportTouchDevices:  true
+    supportTouchDevices:  true,
+    // configuration for toolbar dialogs
+    dialog: {
+      // change how the dialogs are displayed
+      show: function(dialog) {
+        dialog.container.style.display = "";
+      },
+      // change how the dialogs are hidden
+      hide: function(dialog) {
+        dialog.container.style.display = "none";
+      }
+    }
   };
   
   wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend(

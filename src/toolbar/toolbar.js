@@ -75,9 +75,9 @@
           dialogElement = this.container.querySelector("[data-wysihtml5-dialog='" + command + "']"),
           dialog,
           caretBookmark;
-      
+
       if (dialogElement) {
-        dialog = new wysihtml5.toolbar.Dialog(link, dialogElement);
+        dialog = new wysihtml5.toolbar.Dialog(link, dialogElement, this.editor.config.dialog);
 
         dialog.observe("show", function() {
           caretBookmark = that.composer.selection.getBookmark();
@@ -90,7 +90,7 @@
             that.composer.selection.setBookmark(caretBookmark);
           }
           that._execCommand(command, attributes);
-          
+
           that.editor.fire("save:dialog", { command: command, dialogContainer: dialogElement, commandLink: link });
         });
 

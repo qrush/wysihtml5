@@ -34,13 +34,14 @@
       SELECTOR_FORM_ELEMENTS  = "input, select, textarea",
       SELECTOR_FIELDS         = "[data-wysihtml5-dialog-field]",
       ATTRIBUTE_FIELDS        = "data-wysihtml5-dialog-field";
-      
-  
+
+
   wysihtml5.toolbar.Dialog = wysihtml5.lang.Dispatcher.extend(
     /** @scope wysihtml5.toolbar.Dialog.prototype */ {
-    constructor: function(link, container) {
-      this.link       = link;
-      this.container  = container;
+    constructor: function(link, container, config) {
+      this.link      = link;
+      this.container = container;
+      this.config    = config
     },
 
     _observe: function() {
@@ -107,7 +108,17 @@
           length  = fields.length,
           i       = 0;
       for (; i<length; i++) {
-        data[fields[i].getAttribute(ATTRIBUTE_FIELDS)] = fields[i].value;
+        var attribute = fields[i].getAttribute(ATTRIBUTE_FIELDS),
+            value     = fields[i].value;
+
+        // if this attribute is an A href or an IMG src,
+        // check that it starts with http:// or https://
+        if ((attribute == "href" || attribute == "src") && !value.match(/^https?:\/\//)) {
+          // If not, prepend it to the value
+          value = "http://" + value;
+        }
+
+        data[attribute] = value;
       }
       return data;
     },
@@ -171,7 +182,7 @@
         this.interval = setInterval(function() { that._interpolate(true); }, 500);
       }
       dom.addClass(this.link, CLASS_NAME_OPENED);
-      this.container.style.display = "";
+      this.config.show(this);
       this.fire("show");
       if (firstField && !elementToChange) {
         try {
@@ -187,7 +198,7 @@
       clearInterval(this.interval);
       this.elementToChange = null;
       dom.removeClass(this.link, CLASS_NAME_OPENED);
-      this.container.style.display = "none";
+      this.config.hide(this);
       this.fire("hide");
     }
   });
